@@ -15,20 +15,46 @@ st.markdown("""
         background-color: #d1e2c4 !important; 
     }
     
-    /* 🚨 通常テキスト、箇条書き、ラベルを強制的に「真っ黒」にする */
-    .stApp p, .stApp li, .stApp span, .stApp label, .stApp div {
+    /* 🚨 通常テキスト、箇条書き、ラベルを強制的に「真っ黒」にする（ヘッダー内は除外） */
+    .stApp :not(.jkk-header) p, 
+    .stApp :not(.jkk-header) li, 
+    .stApp :not(.jkk-header) span, 
+    .stApp :not(.jkk-header) label, 
+    .stApp :not(.jkk-header) div {
         color: #000000 !important;
     }
     
     /* 🟢 濃い緑のヘッダー外枠デザイン */
     .jkk-header {
         background-color: #1e5e29 !important; 
-        padding: 35px 20px; 
-        border-radius: 12px; 
-        text-align: center;
-        margin-top: 10px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        padding: 25px 20px !important; 
+        border-radius: 12px !important; 
+        text-align: center !important;
+        margin-top: 10px !important;
+        margin-bottom: 30px !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+    }
+    
+    /* ⚪ ヘッダー内の文字色・サイズ設定（黒文字ルールを完全にシャットアウト） */
+    .jkk-header h1 {
+        color: #ffffff !important; 
+        font-size: 20px !important; /* 変な改行を防ぐため、さらに一回り縮小 */
+        font-weight: 700 !important; 
+        margin: 0 0 6px 0 !important; 
+        padding: 0 !important; 
+        letter-spacing: 0.5px !important; 
+        line-height: 1.2 !important;
+        display: block !important;
+    }
+    .jkk-header p {
+        color: #ffffff !important; 
+        font-size: 13px !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        font-weight: 500 !important; 
+        letter-spacing: 0.5px !important; 
+        opacity: 0.9 !important;
+        display: block !important;
     }
     
     /* 各ステップの見出し：特大の真っ黒太字 */
@@ -114,12 +140,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ヘッダーエリア（支部名変更・1級数サイズ縮小・白文字統一）
+# ヘッダーエリア（CSSクラスを適用して安全にレンダリング）
 # ---------------------------------------------------------
 st.markdown("""
     <div class="jkk-header">
-        <h1 style="color: #ffffff !important; font-size: 24px !important; font-weight: 700 !important; margin: 0 0 8px 0 !important; padding: 0 !important; letter-spacing: 1px; line-height: 1.3;">日本樹脂施工協同組合（関西支部）</h1>
-        <p style="color: #ffffff !important; font-size: 15px !important; margin: 0 !important; padding: 0 !important; font-weight: 500; letter-spacing: 0.5px; opacity: 0.95;">外壁タイル面・塗装面改修 フローチャート判定システム</p>
+        <h1>日本樹脂施工協同組合（関西支部）</h1>
+        <p>外壁タイル面・塗装面改修 フローチャート判定システム</p>
     </div>
 """, unsafe_allow_html=True)
 
