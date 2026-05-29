@@ -33,7 +33,7 @@ st.markdown("""
     
     /* 各ステップの見出し：特大の真っ黒太字 */
     .stSubheader div, .stSubheader h3, .stSubheader span {
-        color: #000000 !important; 
+        color: #1A1A1A !important; 
         font-weight: 800 !important;
         font-size: 22px !important;
     }
