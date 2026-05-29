@@ -7,7 +7,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 🎨 カスタムデザイン（CSS）の注入：赤色を完全に排除し、落ち着いたグレーに統一
+# 🎨 カスタムデザイン（CSS）の注入：すべての赤みを完全に排除
 st.markdown("""
     <style>
     /* 全体の背景とフォント設定 */
@@ -59,32 +59,41 @@ st.markdown("""
         border: 1px solid #ced4da;
     }
     
-    /* 結果表示ボックスのカスタマイズ（赤を排除し、上部をシックなグレーに） */
+    /* 結果表示ボックスのカスタマイズ（濃いグレー） */
     .result-box {
         background-color: #ffffff;
-        border-top: 4px solid #495057; /* 濃いグレー */
+        border-top: 4px solid #495057; 
         padding: 20px;
         border-radius: 0 0 8px 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         margin-top: 15px;
     }
 
-    /* ❗赤くなる警告・お祝い表示（st.successやst.info）の背景を優しいグレーに塗り替え */
+    /* 通知・判定メッセージの背景を優しいグレーに固定（赤色を完全に上書き） */
     div[data-testid="stNotification"] {
-        background-color: #f1f3f5 !important; /* 優しい薄グレー */
-        color: #495057 !important; /* 濃いグレー文字 */
+        background-color: #f1f3f5 !important; 
+        color: #495057 !important; 
         border: 1px solid #dee2e6 !important;
     }
-    
-    /* 決定時のアイコンの色などを調整 */
     div[data-testid="stNotification"] p {
         color: #495057 !important;
     }
     div[data-testid="stNotification"] svg {
-        fill: #6c757d !important; /* アイコンもグレーに */
+        fill: #6c757d !important; 
     }
     
-    /* ボタンの丸み設定 */
+    /* 🔴 ボタンの赤み（Primary設定）を上書きして「深い緑」に変更 */
+    button[data-testid="baseButton-primary"] {
+        background-color: #2b8a3e !important;
+        color: white !important;
+        border: none !important;
+    }
+    button[data-testid="baseButton-primary"]:hover {
+        background-color: #237032 !important;
+        color: white !important;
+    }
+    
+    /* ボタンの共通丸み設定 */
     div.stButton > button {
         border-radius: 4px !important;
         font-weight: 600 !important;
@@ -93,7 +102,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ヘッダーエリア（トップ緑仕様）
+# ヘッダーエリア
 # ---------------------------------------------------------
 st.markdown("""
     <div class="jkk-header">
@@ -216,7 +225,7 @@ elif step == 4:
             st.markdown("""
             * **仕様概要**: 注入口付アンカーピンニングエポキシ樹脂注入工法
             * **適合規格**: 国交省仕様適合工法
-            * **工法特徴**: 特殊アンカーピンと樹脂でタイル浮きを確実に防止。意匠性を損ないません。
+            * **工法特徴**: 特殊アンカーピンと樹脂でタイル浮きを確実に防止。意意匠性を損ないません。
             """)
         elif choices == ["塗装面", "面改修"]:
             st.metric(label="推奨工法", value="JKウォール工法")
@@ -316,7 +325,7 @@ if step > 1 or len(choices) == 5:
             st.rerun()
             
     with back_col2:
-        if st.button("🔄 最初からやり直す", use_container_width=True):
+        if st.button("🔄 最初からやり知す", use_container_width=True):
             st.session_state.step = 1
             st.session_state.choices = []
             st.rerun()
