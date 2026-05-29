@@ -19,12 +19,12 @@ st.markdown("""
         background-color: #d1e2c4 !important; 
     }
     
-    /* 【修正！】divを真っ黒にするのをやめ、主要なテキストのみをターゲットにします */
-    .stApp p, .stApp li, .stApp span, .stApp label, .stApp h1, .stApp h2, .stApp h3 {
-        color: #111111 !important; /* 完全な真黒(#000)より、わずかに目に優しい高級感のある黒 */
+    /* 通常エリアのテキストを真っ黒にする設定 */
+    .stApp p, .stApp li, .stApp span, .stApp label, .stApp div {
+        color: #000000 !important;
     }
     
-    /* 🟢 濃い緑のヘッダー外枠デザイン */
+    /* 🟢 濃い緑のヘッダー外枠デザイン（看板の深緑に近い色味へ微調整） */
     .jkk-header {
         background-color: #1a5323 !important; 
         padding: 40px 20px !important; 
@@ -35,19 +35,19 @@ st.markdown("""
         box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
     }
 
-    /* ▼ 看板画像に極限まで寄せた文字バランス・カラー調整 */
+    /* ▼ 看板画像に極限まで寄せた文字バランス・カラー調整（K-1%テイスト） */
     .jkk-header-title {
-        color: #f2f9ec !important; /* 看板の淡いクリーム色 */
-        font-size: 34px !important; 
+        color: #f2f9ec !important; /* 真っ白ではない、画像のようなごくわずかに黄緑がかった淡い色 */
+        font-size: 34px !important; /* 迫力のある看板の文字サイズ比率を再現 */
         font-weight: 800 !important;
         font-family: 'Helvetica Neue', 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif !important;
         letter-spacing: 1.5px !important;
         line-height: 1.4 !important;
         display: block;
-        margin-bottom: 14px; 
+        margin-bottom: 14px; /* サブタイトルとの絶妙なディスタンス */
     }
     .jkk-header-sub {
-        color: #e6f3dc !important; 
+        color: #e6f3dc !important; /* タイトルと同系統の淡い色、かつ少し細めにしてメリハリを強化 */
         font-size: 16px !important;
         font-weight: 500 !important;
         letter-spacing: 1px !important;
@@ -58,7 +58,7 @@ st.markdown("""
 
     /* 各ステップの見出し */
     .stSubheader div, .stSubheader h3, .stSubheader span {
-        color: #111111 !important; 
+        color: #000000 !important; 
         font-weight: 800 !important;
         font-size: 22px !important;
     }
@@ -78,6 +78,9 @@ st.markdown("""
         font-weight: 700;
         margin-bottom: 20px;
         border: 2px solid #1a5323;
+    }
+    .route-info div {
+        color: #000000 !important;
     }
 
     /* 判定メッセージ部分 */
@@ -109,11 +112,17 @@ st.markdown("""
         padding-bottom: 8px;
         margin-bottom: 15px;
     }
+    .result-box li {
+        font-size: 16px !important;
+        line-height: 1.6 !important;
+        margin-bottom: 8px !important;
+        color: #000000 !important;
+    }
 
     /* ボタン（ラジオボタンや通常ボタンの最適化） */
     div.stButton > button, button[data-testid="baseButton-primary"] {
         background-color: #ffffff !important;
-        color: #111111 !important;
+        color: #000000 !important;
         border: 2px solid #777777 !important;
         border-radius: 6px !important;
         font-weight: 700 !important;
@@ -164,7 +173,7 @@ def reset_flow():
 # 5. 🔍 判定フロー・ユーザー選択エリア
 # ==========================================
 
-# 現在の選択状況の表示
+# 現在の選択状況（パンくずリスト風）の表示
 if len(st.session_state.choices) > 0:
     st.markdown(f"""
     <div class="route-info">
@@ -186,10 +195,10 @@ if st.session_state.step == 1:
     with col2:
         if st.button("🎨 塗装面・その他", use_container_width=True):
             st.session_state.choices.append("塗装面・その他")
-            st.session_state.step = 10  
+            st.session_state.step = 10  # 塗装面ルートのダミーステップ（必要に応じて拡張可能）
             st.rerun()
 
-# --- ステップ2: 状態・工法の選択 ---
+# --- ステップ2: 状態・工法の選択（タイル面ルート） ---
 elif st.session_state.step == 2:
     st.subheader("ステップ 2: タイル面の状態、または希望する工法を選んでください")
     
@@ -205,7 +214,7 @@ elif st.session_state.step == 2:
             st.session_state.step = 3
             st.rerun()
 
-# --- ステップ3: 最終確認 ---
+# --- ステップ3: 最終確認（施工規模など） ---
 elif st.session_state.step == 3:
     st.subheader("ステップ 3: 施工の規模・範囲を選択してください")
     
@@ -217,13 +226,14 @@ elif st.session_state.step == 3:
     for opt in options_step3:
         if st.button(opt, use_container_width=True):
             st.session_state.choices.append(opt)
-            st.session_state.step = 4  
+            st.session_state.step = 4  # 結果表示へ
             st.rerun()
 
 # --- ステップ4: タイル面ルートの判定結果表示 ---
 elif st.session_state.step == 4:
     st.subheader("📋 判定結果")
     
+    # 選択に応じた結果文面のシミュレーション
     main_choice = st.session_state.choices[1]
     scale_choice = st.session_state.choices[2]
     
@@ -258,9 +268,9 @@ elif st.session_state.step == 10:
 
 
 # ==========================================
-# 6. ↩️ 共通ナビゲーションボタン
+# 6. ↩️ 共通ナビゲーションボタン（下部固定風）
 # ==========================================
-st.write("---") # ← これで本来のきれいな薄いグレーに戻ります！
+st.write("---")
 nav_col1, nav_col2 = st.columns([1, 4])
 
 with nav_col1:
