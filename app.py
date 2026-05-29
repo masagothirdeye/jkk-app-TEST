@@ -7,17 +7,17 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 🎨 カスタムデザイン（CSS）：バックを薄いグリーンに、赤を徹底排除
+# 🎨 カスタムデザイン（CSS）：文字を黒に、背景を上品なグリーンに調整
 st.markdown("""
     <style>
-    /* 全体の背景（バックを優しい薄いグリーンに変更） */
+    /* 全体の背景（白飛びしない、少し深みを持たせた目に優しい薄緑） */
     .stApp {
-        background-color: #f0f7f4; /* 目が疲れないマイルドな薄緑 */
+        background-color: #e2edd5; 
     }
     
     /* タイル・ヘッダー部分のデザイン（鮮やかな緑色） */
     .jkk-header {
-        background-color: #2b8a3e; /* 信頼感のあるグリーン */
+        background-color: #2b8a3e; /* JKK標準のグリーン */
         padding: 25px;
         border-radius: 8px;
         color: white;
@@ -37,10 +37,10 @@ st.markdown("""
         margin: 0 !important;
     }
     
-    /* サブ見出し（ステップ表示）のデザイン（文字色を深い緑に） */
+    /* 🛠️ 【修正】見出しの文字を完全に「黒」に指定 */
     .stSubheader div, .stSubheader h3 {
-        color: #1e5e29 !important;
-        font-weight: 600 !important;
+        color: #212529 !important; /* はっきり読める黒 */
+        font-weight: 700 !important;
     }
     .stSubheader {
         border-left: 5px solid #2b8a3e;
@@ -51,7 +51,7 @@ st.markdown("""
     
     /* 現在の選択ルート表示（落ち着いたグレー系） */
     .route-info {
-        background-color: #e9ecef;
+        background-color: #ffffff;
         padding: 10px 15px;
         border-radius: 5px;
         color: #495057;
@@ -61,48 +61,47 @@ st.markdown("""
         border: 1px solid #ced4da;
     }
     
-    /* 結果表示ボックスのカスタマイズ（シックな濃いグレー） */
+    /* 結果表示ボックスのカスタマイズ（ホワイト背景に濃い目のヘッダー） */
     .result-box {
         background-color: #ffffff;
-        border-top: 4px solid #495057; 
+        border-top: 4px solid #2b8a3e; 
         padding: 20px;
         border-radius: 0 0 8px 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         margin-top: 15px;
     }
 
-    /* 通知・判定メッセージの背景を優しいグレーに固定 */
+    /* 通知・判定メッセージの背景設定 */
     div[data-testid="stNotification"] {
-        background-color: #e9ecef !important; 
+        background-color: #ffffff !important; 
         color: #495057 !important; 
         border: 1px solid #ced4da !important;
     }
     
-    /* 🔴 問題となっていた赤いボタン設定（type="primary"）を完全に上書き */
-    /* 目が痛くならない、落ち着いた「薄いグレー」に作り直しました */
+    /* 🔴 赤いボタン（type="primary"）を、白ベース＋緑枠のスマートなデザインに上書き */
     button[data-testid="baseButton-primary"] {
         background-color: #ffffff !important;
-        color: #495057 !important;
+        color: #212529 !important;
         border: 1px solid #ced4da !important;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
     }
-    /* ボタンにマウスを乗せたとき（ホバー）の色 */
+    /* ボタンにマウスを乗せたとき（ホバー） */
     button[data-testid="baseButton-primary"]:hover {
-        background-color: #e9ecef !important;
+        background-color: #f4f9f4 !important;
         border: 1px solid #2b8a3e !important;
         color: #2b8a3e !important;
     }
     
-    /* 通常ボタンの基本設定とホバー設定 */
+    /* 通常のボタン（白ベース） */
     div.stButton > button {
         background-color: #ffffff !important;
-        color: #495057 !important;
+        color: #212529 !important;
         border: 1px solid #ced4da !important;
         border-radius: 4px !important;
         font-weight: 600 !important;
     }
     div.stButton > button:hover {
-        background-color: #e9ecef !important;
+        background-color: #f4f9f4 !important;
         border-color: #2b8a3e !important;
         color: #2b8a3e !important;
     }
@@ -110,7 +109,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ヘッダーエリア（トップ緑仕様）
+# ヘッダーエリア
 # ---------------------------------------------------------
 st.markdown("""
     <div class="jkk-header">
