@@ -7,7 +7,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 🎨 カスタムデザイン（CSS）：すべての文字を確実に黒くし、白飛びを徹底防ぐ
+# 🎨 カスタムデザイン（CSS）
 st.markdown("""
     <style>
     /* 全体の背景：しっかりとした上品な薄緑 */
@@ -15,17 +15,16 @@ st.markdown("""
         background-color: #d1e2c4 !important; 
     }
     
-    /* 🚨 画面上のすべての通常テキスト、箇条書き、ラベルを強制的に「真っ黒」にする */
+    /* 🚨 通常テキスト、箇条書き、ラベルを強制的に「真っ黒」にする（ヘッダー以外） */
     .stApp p, .stApp li, .stApp span, .stApp label, .stApp div {
         color: #000000 !important;
     }
     
-    /* タイル・ヘッダー部分のデザイン（JKK組合の深緑） */
+    /* 🟢 【修正】タイル・ヘッダー部分（濃い緑のところは文字を「白」に固定） */
     .jkk-header {
         background-color: #1e5e29 !important; 
         padding: 25px;
         border-radius: 8px;
-        color: #ffffff !important;
         text-align: center;
         margin-bottom: 25px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -42,7 +41,7 @@ st.markdown("""
         margin: 0 !important;
     }
     
-    /* 各ステップの見出し（【ステップ1】など）：特大の真っ黒太字 */
+    /* 各ステップの見出し：特大の真っ黒太字 */
     .stSubheader div, .stSubheader h3, .stSubheader span {
         color: #000000 !important; 
         font-weight: 800 !important;
@@ -69,42 +68,43 @@ st.markdown("""
         color: #000000 !important;
     }
     
-    /* 📋 判定メッセージ部分（白背景に変更） */
+    /* 📋 判定メッセージ部分（白背景） */
     div[data-testid="stNotification"] {
         background-color: #ffffff !important; 
         border: 2px solid #1e5e29 !important;
     }
     
-    /* 🏆 【最重要】結果表示ボックス（真っ白な背景の中に、真っ黒な特大文字で工法を表示） */
+    /* 🏆 【修正】結果表示ボックス（不要な余白や空枠が出ないようスマートに設計） */
     .result-box {
         background-color: #ffffff !important;
-        border: 3px solid #1e5e29 !important;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-        margin-top: 20px;
+        border-top: 4px solid #1e5e29 !important;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-top: 15px;
     }
     .result-title {
         font-size: 14px !important;
         font-weight: bold !important;
-        color: #555555 !important;
-        margin-bottom: 5px;
+        color: #333333 !important;
+        margin-bottom: 2px;
     }
     .result-value {
-        font-size: 32px !important;
+        font-size: 28px !important;
         font-weight: 900 !important;
-        color: #1e5e29 !important; /* 工法名だけは目立たせるために深い緑 */
+        color: #000000 !important;
         border-bottom: 2px solid #1e5e29;
-        padding-bottom: 10px;
+        padding-bottom: 8px;
         margin-bottom: 15px;
     }
     .result-box li {
         font-size: 16px !important;
         line-height: 1.6 !important;
         margin-bottom: 8px !important;
+        color: #000000 !important;
     }
 
-    /* ボタン全体の共通設定（白ベースに黒文字、枠を少し太く） */
+    /* ボタン全体の共通設定 */
     div.stButton > button, button[data-testid="baseButton-primary"] {
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -115,7 +115,6 @@ st.markdown("""
         height: 50px !important;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
     }
-    /* ボタンにマウスを乗せたとき（反応がわかりやすいように薄い緑に変化） */
     div.stButton > button:hover, button[data-testid="baseButton-primary"]:hover {
         background-color: #e8f5e9 !important;
         border-color: #1e5e29 !important;
@@ -239,30 +238,43 @@ elif step == 4:
         st.markdown(f'<div class="route-info">📂 判定ルート：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
         st.info("📋 推奨工法が判定されました")
         
-        # 最終結果ボックス（白背景化で視認性を100%に）
-        st.markdown('<div class="result-box">', unsafe_allow_html=True)
+        # 【修正】空枠を無くし、このボックス内にタイトルと結果、説明をすべて統合
         if choices == ["タイル面", "部分改修"]:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKテラピン工法</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **仕様概要**: 注入口付アンカーピンニングエポキシ樹脂注入工法
-            * **適合規格**: 国交省仕様適合工法
-            * **工法特徴**: 特殊アンカーピンと樹脂でタイル浮きを確実に防止。意匠性を損ないません。
-            """)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKテラピン工法</div>
+                <ul>
+                    <li><b>仕様概要</b>: 注入口付アンカーピンニングエポキシ樹脂注入工法</li>
+                    <li><b>適合規格</b>: 国交省仕様適合工法</li>
+                    <li><b>工法特徴</b>: 特殊アンカーピンと樹脂でタイル浮きを確実に防止。意匠性を損ないません。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
         elif choices == ["塗装面", "面改修"]:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKウォール工法</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **仕様概要**: 外壁塗膜防水工法（水性系）
-            * **主成分**: アクリルゴム系
-            * **適合規格**: JIS A 6021
-            * **工法特徴**: 抜群のひび割れ追従性を誇る防水塗膜で、雨水の侵入をシャットアウトします。
-            """)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKウォール工法</div>
+                <ul>
+                    <li><b>仕様概要</b>: 外壁塗膜防水工法（水性系）</li>
+                    <li><b>主成分</b>: アクリルゴム系</li>
+                    <li><b>適合規格</b>: JIS A 6021</li>
+                    <li><b>工法特徴</b>: 抜群のひび割れ追従性を誇る防水塗膜で、雨水の侵入をシャットアウトします。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
         elif choices == ["塗装面", "部分改修"]:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKラビング工法</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **仕様概要**: ノンカットひび割れ補修工法 / アスベスト対策工法（水性系）
-            * **工法特徴**: ひび割れを切削（Uカット）せずに補修するため、下地のアスベスト粉塵を飛散させず安全です。
-            """)
-        st.markdown('</div>', unsafe_allow_html=True)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKラビング工法</div>
+                <ul>
+                    <li><b>仕様概要</b>: ノンカットひび割れ補修工法 / アスベスト対策工法（水性系）</li>
+                    <li><b>工法特徴</b>: ひび割れを切削（Uカット）せずに補修するため、下地のアスベスト粉塵を飛散させず安全です。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # ステップ5：最終確定
@@ -301,51 +313,84 @@ elif step == 5:
         st.markdown(f'<div class="route-info">📂 判定ルート：{ " ＞ ".join(choices[:4]) } ＞ {choices[4]}</div>', unsafe_allow_html=True)
         st.info("📋 推奨工法が判定されました")
         
-        # 最終結果ボックス（白背景化で視認性を100%に）
-        st.markdown('<div class="result-box">', unsafe_allow_html=True)
+        # 【修正】空枠を完全に排除し、結果ボックスにすべてきれいにまとめて出力
         if "アクリル樹脂（標準仕様）" in choices:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKセライダー工法（標準仕様）</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **主成分**: アクリル樹脂（溶剤系） / UR都市機構 品質基準適合工法
-            * **特徴**: 透明性の高いクリア樹脂で、タイルの風合いをそのまま残して剥落を防止します。
-            """)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKセライダー工法（標準仕様）</div>
+                <ul>
+                    <li><b>主成分</b>: アクリル樹脂（溶剤系） / UR都市機構 品質基準適合工法</li>
+                    <li><b>特徴</b>: 透明性の高いクリア樹脂で、タイルの風合いをそのまま残して剥落を防止します。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
         elif "アクリル樹脂（防水仕様）" in choices:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKセライダー工法（防水仕様）</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **主成分**: アクリル樹脂（溶剤系） / UR都市機構 品質基準適合工法
-            * **特徴**: 高い剥落防止性能に加え、目地からの雨水浸入を防ぐ高い防水性を備えています。
-            """)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKセライダー工法（防水仕様）</div>
+                <ul>
+                    <li><b>主成分</b>: アクリル樹脂（溶剤系） / UR都市機構 品質基準適合工法</li>
+                    <li><b>特徴</b>: 高い剥落防止性能に加え、目地からの雨水浸入を防ぐ高い防水性を備えています。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
         elif "ウレタン樹脂（標準仕様）" in choices:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKセライダーU工法（標準仕様）</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **主成分**: ウレタン樹脂（溶剤系）
-            * **特徴**: 強靭かつ柔軟なウレタン塗膜で、下地やタイルの細かな伸縮挙動にしっかり追従します。
-            """)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKセライダーU工法（標準仕様）</div>
+                <ul>
+                    <li><b>主成分</b>: ウレタン樹脂（溶剤系）</li>
+                    <li><b>特徴</b>: 強靭かつ柔軟なウレタン塗膜で、下地やタイルの細かな伸縮挙動にしっかり追従します。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
         elif "アクリル樹脂" in choices and "剥落防止工法" in choices:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">水性JKセライダー工法</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **主成分**: アクリル樹脂（水性系） / UR都市機構 品質基準適合工法
-            * **特徴**: 性能はそのままに完全水性化。シンナー臭が一切ないため、居住者や環境に最適です。
-            """)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">水性JKセライダー工法</div>
+                <ul>
+                    <li><b>主成分</b>: アクリル樹脂（水性系） / UR都市機構 品質基準適合工法</li>
+                    <li><b>特徴</b>: 性能はそのままに完全水性化。シンナー臭が一切ないため、居住者や環境に最適です。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
         elif "ウレタン樹脂" in choices and "剥落防止工法" in choices:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKクリアファイバーW工法</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **主成分**: ウレタン樹脂（水性系） / UR都市機構 品質基準適合工法
-            * **特徴**: 水性ウレタンと特殊繊維を組み合わせ、非常に高い引張強度で外壁を強固にホールドします。
-            """)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKクリアファイバーW工法</div>
+                <ul>
+                    <li><b>主成分</b>: ウレタン樹脂（水性系） / UR都市機構 品質基準適合工法</li>
+                    <li><b>特徴</b>: 水性ウレタンと特殊繊維を組み合わせ、非常に高い引張強度で外壁を強固にホールドします。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
         elif "溶剤系" in choices and "防水・保護工法" in choices:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKコート工法</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **主成分**: アクリル樹脂（溶剤系）
-            * **特徴**: タイルの美観を維持するクリアー仕上げ。目地への保水・エフロの発生を長期間抑制します。
-            """)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKコート工法</div>
+                <ul>
+                    <li><b>主成分</b>: アクリル樹脂（溶剤系）</li>
+                    <li><b>特徴</b>: タイルの美観を維持するクリアー仕上げ。目地への保水・エフロの発生を長期間抑制します。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
         elif "水性系" in choices and "防水・保護工法" in choices:
-            st.markdown('<div class="result-title">推奨工法</div><div class="result-value">JKクリアコートW工法</div>', unsafe_allow_html=True)
             st.markdown("""
-            * **主成分**: ウレタン樹脂（水性系）
-            * **特徴**: 環境に優しい水性クリアー。ウレタンの柔軟性で外壁の微細な動きを保護し、雨水を防ぎます。
-            """)
-        st.markdown('</div>', unsafe_allow_html=True)
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKクリアコートW工法</div>
+                <ul>
+                    <li><b>主成分</b>: ウレタン樹脂（水性系）</li>
+                    <li><b>特徴</b>: 環境に優しい水性クリアー。ウレタンの柔軟性で外壁の微細な動きを保護し、雨水を防ぎます。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # 🔙 戻るボタンエリア
@@ -367,7 +412,7 @@ if step > 1 or len(choices) == 5:
             st.rerun()
             
     with back_col2:
-        if st.button("🔄 最初からやり長す", use_container_width=True):
+        if st.button("🔄 最初からやり直す", use_container_width=True):
             st.session_state.step = 1
             st.session_state.choices = []
             st.rerun()
