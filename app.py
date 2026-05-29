@@ -20,7 +20,7 @@ st.markdown("""
         color: #000000 !important;
     }
     
-    /* 🟢 【最重要修正】濃い緑のヘッダー内は「絶対に白文字」に上書き */
+    /* 🟢 濃い緑のヘッダー外枠デザイン */
     .jkk-header {
         background-color: #1e5e29 !important; 
         padding: 25px;
@@ -28,17 +28,6 @@ st.markdown("""
         text-align: center;
         margin-bottom: 25px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .jkk-header h1, .jkk-header h1 span {
-        color: #ffffff !important;
-        font-size: 24px !important;
-        font-weight: 700 !important;
-        margin-bottom: 5px !important;
-    }
-    .jkk-header p, .jkk-header p span {
-        color: #e8f5e9 !important;
-        font-size: 14px !important;
-        margin: 0 !important;
     }
     
     /* 各ステップの見出し：特大の真っ黒太字 */
@@ -74,7 +63,7 @@ st.markdown("""
         border: 2px solid #1e5e29 !important;
     }
     
-    /* 🏆 結果表示ボックス */
+    /* 🏆 結果表示ボックス（空白の時は枠が出ないようにスマートにクラス化） */
     .result-box {
         background-color: #ffffff !important;
         border-top: 4px solid #1e5e29 !important;
@@ -124,12 +113,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ヘッダーエリア（インラインCSSでも白文字を徹底補強）
+# ヘッダーエリア（文字白を完全にインラインCSSで最優先強制）
 # ---------------------------------------------------------
 st.markdown("""
     <div class="jkk-header">
-        <h1 style="color: #ffffff !important;">日本樹脂施工協同組合（JKK関西）</h1>
-        <p style="color: #e8f5e9 !important;">外壁タイル面・塗装面改修 フローチャート判定システム</p>
+        <h1 style="color: #ffffff !important; font-size: 24px !important; font-weight: 700 !important; margin: 0 0 5px 0 !important; padding: 0 !important;">日本樹脂施工協同組合（JKK関西）</h1>
+        <p style="color: #e8f5e9 !important; font-size: 14px !important; margin: 0 !important; padding: 0 !important;">外壁タイル面・塗装面改修 フローチャート判定システム</p>
     </div>
 """, unsafe_allow_html=True)
 
@@ -171,40 +160,59 @@ elif step == 2:
         if st.button("🏢 面改修", use_container_width=True):
             st.session_state.choices.append("面改修")
             if choices[0] == "塗装面":
-                st.session_state.step = 4  # 塗装面・面改修はステップ3を飛ばす
+                st.session_state.step = 4  # 塗装面・面改修は工法目的（ステップ3）がないのでスキップ
             else:
                 st.session_state.step = 3
             st.rerun()
     with col2:
         if st.button("🛠️ 部分改修", use_container_width=True):
             st.session_state.choices.append("部分改修")
-            st.session_state.step = 4  # 部分改修は直接結果へ
+            if choices[0] == "塗装面":
+                st.session_state.step = 4  # 塗装面・部分改修は直接結果へ
+            else:
+                st.session_state.step = 3  # 🚨【修正】タイル面・部分改修はテラピンとラビングに分岐させるためステップ3へ！
             st.rerun()
 
 # ---------------------------------------------------------
-# ステップ3：工法目的の選択（タイル面・面改修のみ）
+# ステップ3：工法・目的の選択（タイル面の面改修および部分改修）
 # ---------------------------------------------------------
 elif step == 3:
     st.markdown(f'<div class="route-info">📂 現在の選択：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
-    st.subheader("【ステップ 3】改修の目的を選択してください")
+    st.subheader("【ステップ 3】改修の目的・工法を選択してください")
     
     col1, col2 = st.columns(2)
-    with col1:
-        if st.button("🛡️ 剥落防止工法", use_container_width=True):
-            st.session_state.choices.append("剥落防止工法")
-            st.session_state.step = 4
-            st.rerun()
-    with col2:
-        if st.button("💧 防水・保護工法", use_container_width=True):
-            st.session_state.choices.append("防水・保護工法")
-            st.session_state.step = 4
-            st.rerun()
+    
+    # タイル面・面改修のとき
+    if "面改修" in choices:
+        with col1:
+            if st.button("🛡️ 剥落防止工法", use_container_width=True):
+                st.session_state.choices.append("剥落防止工法")
+                st.session_state.step = 4
+                st.rerun()
+        with col2:
+            if st.button("💧 防水・保護工法", use_container_width=True):
+                st.session_state.choices.append("防水・保護工法")
+                st.session_state.step = 4
+                st.rerun()
+                
+    # 🚨【修正】タイル面・部分改修のときの分岐ルートを新設！
+    elif "部分改修" in choices:
+        with col1:
+            if st.button("🛡️ 剥落防止工法 (アスベスト対策)", use_container_width=True):
+                st.session_state.choices.append("剥落防止工法")
+                st.session_state.step = 4
+                st.rerun()
+        with col2:
+            if st.button("🩹 ノンカットひび割れ補修工法", use_container_width=True):
+                st.session_state.choices.append("ノンカットひび割れ補修工法")
+                st.session_state.step = 4
+                st.rerun()
 
 # ---------------------------------------------------------
 # ステップ4：系統の選択、または即時最終結果の表示
 # ---------------------------------------------------------
 elif step == 4:
-    # 選択肢のパターンによって分岐を完全に網羅
+    # さらに下位の「溶剤系／水性系」の選択が必要なルート
     if choices == ["タイル面", "面改修", "剥落防止工法"] or choices == ["タイル面", "面改修", "防水・保護工法"]:
         st.markdown(f'<div class="route-info">📂 現在の選択：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
         st.subheader("【ステップ 4】塗料の系統を選択してください")
@@ -221,22 +229,36 @@ elif step == 4:
                 st.rerun()
                 
     else:
-        # 分岐を介さず即結果が出るルート
+        # 🚨【修正】このステップで完全に結果が確定するルート（空枠は出ません）
         st.markdown(f'<div class="route-info">📂 判定ルート：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
         st.info("📋 推奨工法が判定されました")
         
-        if choices == ["タイル面", "部分改修"]:
+        # 🚨【修正】タイル面・部分改修からしっかりテラピンとラビングに分岐！
+        if choices == ["タイル面", "部分改修", "剥落防止工法"]:
             st.markdown("""
             <div class="result-box">
                 <div class="result-title">推奨工法</div>
                 <div class="result-value">JKテラピン工法</div>
                 <ul>
-                    <li><b>仕様概要</b>: 注入口付アンカーピンニングエポキシ樹脂注入工法</li>
+                    <li><b>仕様概要</b>: 注入口付アンカーピンニングエポキシ樹脂注入工法 / アスベスト対策工法</li>
                     <li><b>適合規格</b>: 国交省仕様適合工法</li>
-                    <li><b>工法特徴</b>: 特殊アンカーピンと樹脂でタイル浮きを確実に防止。意匠性を損ないません。</li>
+                    <li><b>工法特徴</b>: 特殊アンカーピンと樹脂でタイル浮きを確実に防止。下地のアスベスト対策にも対応。</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
+            
+        elif choices == ["タイル面", "部分改修", "ノンカットひび割れ補修工法"]:
+            st.markdown("""
+            <div class="result-box">
+                <div class="result-title">推奨工法</div>
+                <div class="result-value">JKラビング工法</div>
+                <ul>
+                    <li><b>仕様概要</b>: ノンカットひび割れ補修工法 / アスベスト対策工法（水性系）</li>
+                    <li><b>工法特徴</b>: タイル部分のひび割れを切削せずに補修するため、環境に優しく安全に施工可能です。</li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+            
         elif choices == ["塗装面", "面改修"]:
             st.markdown("""
             <div class="result-box">
@@ -250,6 +272,7 @@ elif step == 4:
                 </ul>
             </div>
             """, unsafe_allow_html=True)
+            
         elif choices == ["塗装面", "部分改修"]:
             st.markdown("""
             <div class="result-box">
@@ -257,20 +280,20 @@ elif step == 4:
                 <div class="result-value">JKラビング工法</div>
                 <ul>
                     <li><b>仕様概要</b>: ノンカットひび割れ補修工法 / アスベスト対策工法（水性系）</li>
-                    <li><b>工法特徴</b>: ひび割れを切削（Uカット）せずに補修するため、下地のアスベスト粉塵を飛散させず安全です。</li>
+                    <li><b>工法特徴</b>: 塗装面のひび割れを切削（Uカット）せずに補修するため、下地のアスベスト粉塵を飛散させず安全です。</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ステップ5：分岐の最終確定、または結果表示
+# ステップ5：最終分岐の確定（剥落防止・防水保護の最終リザルト）
 # ---------------------------------------------------------
 elif step == 5:
-    # 選択がまだ5つ目に達していない場合は、仕様の選択肢を出す
-    if len(choices) == 4:
+    # 剥落防止工法ルートのみ、ステップ5で最後のボタン選択を挟む
+    if len(choices) == 4 and "剥落防止工法" in choices:
         st.markdown(f'<div class="route-info">📂 現在の選択：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
         
-        if choices == ["タイル面", "面改修", "剥落防止工法", "溶剤系"]:
+        if "溶剤系" in choices:
             st.subheader("【ステップ 5】仕様を選択してください")
             col1, col2 = st.columns(2)
             with col1:
@@ -285,7 +308,7 @@ elif step == 5:
                 st.session_state.choices.append("ウレタン樹脂（標準仕様）")
                 st.rerun()
 
-        elif choices == ["タイル面", "面改修", "剥落防止工法", "水性系"]:
+        elif "水性系" in choices:
             st.subheader("【ステップ 5】樹脂の種類を選択してください")
             col1, col2 = st.columns(2)
             with col1:
@@ -297,15 +320,12 @@ elif step == 5:
                     st.session_state.choices.append("ウレタン樹脂")
                     st.rerun()
                     
-        # 🚨【バグ修正】防水・保護工法のルートを選んだとき、選択肢を挟まずに即結果を出すよう処理
-        elif choices == ["タイル面", "面改修", "防水・保護工法", "溶剤系"]:
-            st.session_state.choices.append("確定")
-            st.rerun()
-        elif choices == ["タイル面", "面改修", "防水・保護工法", "水性系"]:
-            st.session_state.choices.append("確定")
-            st.rerun()
+    # 防水・保護工法ルートだった場合は、選択肢を挟まず自動的に最終確定状態へ進める
+    elif len(choices) == 4 and "防水・保護工法" in choices:
+        st.session_state.choices.append("確定用フラグ")
+        st.rerun()
             
-    # 5つ目の要素が確定したら、最終結果をきれいに表示
+    # 最終結果の書き出し（不要な空白枠は一切表示されません）
     else:
         st.markdown(f'<div class="route-info">📂 判定ルート：{ " ＞ ".join(choices[:4]) }</div>', unsafe_allow_html=True)
         st.info("📋 推奨工法が判定されました")
@@ -350,7 +370,7 @@ elif step == 5:
                 <div class="result-value">水性JKセライダー工法</div>
                 <ul>
                     <li><b>主成分</b>: アクリル樹脂（水性系） / UR都市機構 品質基準適合工法</li>
-                    <li><b>特徴</b>: 性能はそのままに完全水性化。シンナー臭が一切ないため、居住者や環境に最適です。</li>
+                    <li><b>特徴</b>: 性能はそのままに完全水性化。シンナー臭が一切ないため、環境に優しい仕様です。</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
@@ -361,11 +381,10 @@ elif step == 5:
                 <div class="result-value">JKクリアファイバーW工法</div>
                 <ul>
                     <li><b>主成分</b>: ウレタン樹脂（水性系） / UR都市機構 品質基準適合工法</li>
-                    <li><b>特徴</b>: 水性ウレタンと特殊繊維を組み合わせ、非常に高い引張強度で外壁を強固にホールドします。</li>
+                    <li><b>特徴</b>: 水性ウレタンと特殊繊維を組み合わせ、非常に高い引張強度で外壁を保持します。</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
-        # 🚨【バグ修正】防水・保護工法ルートの出力記述を追加
         elif "溶剤系" in choices and "防水・保護工法" in choices:
             st.markdown("""
             <div class="result-box">
@@ -373,7 +392,7 @@ elif step == 5:
                 <div class="result-value">JKコート工法</div>
                 <ul>
                     <li><b>主成分</b>: アクリル樹脂（溶剤系）</li>
-                    <li><b>特徴</b>: タイルの美観を維持するクリアー仕上げ。目地への保水・エフロの発生を長期間抑制します。</li>
+                    <li><b>特徴</b>: タイルの美観を維持するクリアー仕上げ。目地への保水やエフロの発生を長期間抑えます。</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
@@ -400,8 +419,8 @@ if step > 1 or len(choices) >= 5:
         if st.button("◀ 1つ前に戻る", use_container_width=True):
             if st.session_state.choices:
                 st.session_state.choices.pop()
-                # 確定を挟んだ自動分岐ルート用の追加ポップ処理
-                if st.session_state.choices and st.session_state.choices[-1] == "確定":
+                # 自動スキップ・確定用フラグが入っている場合はもう1個削除
+                if st.session_state.choices and st.session_state.choices[-1] == "確定用フラグ":
                     st.session_state.choices.pop()
             
             if choices[:2] == ["塗装面", "面改修"] and step == 4:
