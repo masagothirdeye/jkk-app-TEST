@@ -7,12 +7,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 🎨 カスタムデザイン（CSS）：赤色ボタンを完全に排除、文字の視認性を向上
+# 🎨 カスタムデザイン（CSS）：バックを薄いグリーンに、赤を徹底排除
 st.markdown("""
     <style>
-    /* 全体の背景とフォント設定 */
+    /* 全体の背景（バックを優しい薄いグリーンに変更） */
     .stApp {
-        background-color: #f5f7f8;
+        background-color: #f0f7f4; /* 目が疲れないマイルドな薄緑 */
     }
     
     /* タイル・ヘッダー部分のデザイン（鮮やかな緑色） */
@@ -37,14 +37,15 @@ st.markdown("""
         margin: 0 !important;
     }
     
-    /* サブ見出し（ステップ表示）の文字色を白から「深い緑」へ修正 */
+    /* サブ見出し（ステップ表示）のデザイン（文字色を深い緑に） */
     .stSubheader div, .stSubheader h3 {
-        color: #2b8a3e !important;
+        color: #1e5e29 !important;
+        font-weight: 600 !important;
     }
     .stSubheader {
         border-left: 5px solid #2b8a3e;
         padding-left: 10px;
-        margin-top: 20px;
+        margin-top: 25px;
         margin-bottom: 20px;
     }
     
@@ -60,7 +61,7 @@ st.markdown("""
         border: 1px solid #ced4da;
     }
     
-    /* 結果表示ボックスのカスタマイズ（濃いグレー） */
+    /* 結果表示ボックスのカスタマイズ（シックな濃いグレー） */
     .result-box {
         background-color: #ffffff;
         border-top: 4px solid #495057; 
@@ -72,39 +73,44 @@ st.markdown("""
 
     /* 通知・判定メッセージの背景を優しいグレーに固定 */
     div[data-testid="stNotification"] {
-        background-color: #f1f3f5 !important; 
+        background-color: #e9ecef !important; 
         color: #495057 !important; 
-        border: 1px solid #dee2e6 !important;
-    }
-    
-    /* 🔴 問題の赤いボタン（type="primary"）を、目に優しいシックなグレーに上書き変更 */
-    button[data-testid="baseButton-primary"] {
-        background-color: #e9ecef !important;
-        color: #495057 !important;
         border: 1px solid #ced4da !important;
     }
-    button[data-testid="baseButton-primary"]:hover {
-        background-color: #dee2e6 !important;
-        border: 1px solid #adb5bd !important;
-        color: #212529 !important;
-    }
     
-    /* 通常ボタンのホバー時の色合いもマイルドに */
-    div.stButton > button:hover {
-        border-color: #2b8a3e !important;
+    /* 🔴 問題となっていた赤いボタン設定（type="primary"）を完全に上書き */
+    /* 目が痛くならない、落ち着いた「薄いグレー」に作り直しました */
+    button[data-testid="baseButton-primary"] {
+        background-color: #ffffff !important;
+        color: #495057 !important;
+        border: 1px solid #ced4da !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+    }
+    /* ボタンにマウスを乗せたとき（ホバー）の色 */
+    button[data-testid="baseButton-primary"]:hover {
+        background-color: #e9ecef !important;
+        border: 1px solid #2b8a3e !important;
         color: #2b8a3e !important;
     }
     
-    /* ボタンの共通丸み設定 */
+    /* 通常ボタンの基本設定とホバー設定 */
     div.stButton > button {
+        background-color: #ffffff !important;
+        color: #495057 !important;
+        border: 1px solid #ced4da !important;
         border-radius: 4px !important;
         font-weight: 600 !important;
+    }
+    div.stButton > button:hover {
+        background-color: #e9ecef !important;
+        border-color: #2b8a3e !important;
+        color: #2b8a3e !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ヘッダーエリア
+# ヘッダーエリア（トップ緑仕様）
 # ---------------------------------------------------------
 st.markdown("""
     <div class="jkk-header">
@@ -184,7 +190,6 @@ elif step == 3:
 # ステップ4：系統の選択、または最終結果の表示
 # ---------------------------------------------------------
 elif step == 4:
-    # タイル面 ＞ 面改修 ＞ 剥落防止工法
     if choices == ["タイル面", "面改修", "剥落防止工法"]:
         st.markdown(f'<div class="route-info">📂 現在の選択：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
         st.subheader("【ステップ 4】塗料の系統を選択してください")
@@ -200,7 +205,6 @@ elif step == 4:
                 st.session_state.step = 5 
                 st.rerun()
                 
-    # タイル面 ＞ 面改修 ＞ 防水・保護工法
     elif choices == ["タイル面", "面改修", "防水・保護工法"]:
         st.markdown(f'<div class="route-info">📂 現在の選択：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
         st.subheader("【ステップ 4】塗料の系統を選択してください")
@@ -216,7 +220,6 @@ elif step == 4:
                 st.session_state.step = 5
                 st.rerun()
 
-    # 最終確定ルート（ステップ4）
     else:
         st.markdown(f'<div class="route-info">📂 判定ルート：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
         st.info("📋 推奨工法が判定されました")
@@ -246,7 +249,7 @@ elif step == 4:
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ステップ5：最終確定（タイル面・面改修の溶剤／水性ルートの分岐）
+# ステップ5：最終確定
 # ---------------------------------------------------------
 elif step == 5:
     if len(choices) < 5:
@@ -279,7 +282,6 @@ elif step == 5:
                     st.session_state.choices.append("ウレタン樹脂")
                     st.rerun()
     else:
-        # 結果表示
         st.markdown(f'<div class="route-info">📂 判定ルート：{ " ＞ ".join(choices[:4]) } ＞ {choices[4]}</div>', unsafe_allow_html=True)
         st.info("📋 推奨工法が判定されました")
         
