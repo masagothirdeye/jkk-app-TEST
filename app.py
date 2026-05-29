@@ -20,11 +20,11 @@ st.markdown("""
         color: #000000 !important;
     }
     
-    /* 🟢 濃い緑のヘッダー外枠デザイン（アップロード画像のデザインを再現） */
+    /* 🟢 濃い緑のヘッダー外枠デザイン */
     .jkk-header {
         background-color: #1e5e29 !important; 
-        padding: 35px 20px; /* 上下の余白を広げてバランスを調整 */
-        border-radius: 12px; /* 枠の丸みを画像に合わせる */
+        padding: 35px 20px; 
+        border-radius: 12px; 
         text-align: center;
         margin-top: 10px;
         margin-bottom: 30px;
@@ -114,12 +114,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ヘッダーエリア（文字サイズと余白のバランスを調整）
+# ヘッダーエリア（支部名変更・1級数サイズ縮小・白文字統一）
 # ---------------------------------------------------------
 st.markdown("""
     <div class="jkk-header">
-        <h1 style="color: #ffffff !important; font-size: 28px !important; font-weight: 700 !important; margin: 0 0 12px 0 !important; padding: 0 !important; letter-spacing: 1px; line-height: 1.3;">日本樹脂施工協同組合（JKK関西）</h1>
-        <p style="color: #e8f5e9 !important; font-size: 16px !important; margin: 0 !important; padding: 0 !important; font-weight: 500; letter-spacing: 0.5px;">外壁タイル面・塗装面改修 フローチャート判定システム</p>
+        <h1 style="color: #ffffff !important; font-size: 24px !important; font-weight: 700 !important; margin: 0 0 8px 0 !important; padding: 0 !important; letter-spacing: 1px; line-height: 1.3;">日本樹脂施工協同組合（関西支部）</h1>
+        <p style="color: #ffffff !important; font-size: 15px !important; margin: 0 !important; padding: 0 !important; font-weight: 500; letter-spacing: 0.5px; opacity: 0.95;">外壁タイル面・塗装面改修 フローチャート判定システム</p>
     </div>
 """, unsafe_allow_html=True)
 
