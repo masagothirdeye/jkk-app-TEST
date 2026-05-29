@@ -7,7 +7,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 🎨 カスタムデザイン（CSS）の注入：トップを緑に、警告・結果の赤色をグレーに変更
+# 🎨 カスタムデザイン（CSS）の注入：赤色を完全に排除し、落ち着いたグレーに統一
 st.markdown("""
     <style>
     /* 全体の背景とフォント設定 */
@@ -65,15 +65,23 @@ st.markdown("""
         border-top: 4px solid #495057; /* 濃いグレー */
         padding: 20px;
         border-radius: 0 0 8px 8px;
-        box-shadow: 0 4px 12 rgba(0,0,0,0.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         margin-top: 15px;
     }
 
-    /* Streamlit標準の成功メッセージ（緑/赤）を無機質なグレー風に上書き */
+    /* ❗赤くなる警告・お祝い表示（st.successやst.info）の背景を優しいグレーに塗り替え */
     div[data-testid="stNotification"] {
-        background-color: #e9ecef !important;
-        color: #212529 !important;
-        border: 1px solid #ced4da !important;
+        background-color: #f1f3f5 !important; /* 優しい薄グレー */
+        color: #495057 !important; /* 濃いグレー文字 */
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    /* 決定時のアイコンの色などを調整 */
+    div[data-testid="stNotification"] p {
+        color: #495057 !important;
+    }
+    div[data-testid="stNotification"] svg {
+        fill: #6c757d !important; /* アイコンもグレーに */
     }
     
     /* ボタンの丸み設定 */
