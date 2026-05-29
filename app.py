@@ -7,7 +7,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 🎨 カスタムデザイン（CSS）の注入：すべての赤みを完全に排除
+# 🎨 カスタムデザイン（CSS）：赤色ボタンを完全に排除、文字の視認性を向上
 st.markdown("""
     <style>
     /* 全体の背景とフォント設定 */
@@ -37,10 +37,11 @@ st.markdown("""
         margin: 0 !important;
     }
     
-    /* サブ見出し（ステップ表示）のデザイン */
-    .stSubheader {
+    /* サブ見出し（ステップ表示）の文字色を白から「深い緑」へ修正 */
+    .stSubheader div, .stSubheader h3 {
         color: #2b8a3e !important;
-        font-weight: 600 !important;
+    }
+    .stSubheader {
         border-left: 5px solid #2b8a3e;
         padding-left: 10px;
         margin-top: 20px;
@@ -69,28 +70,29 @@ st.markdown("""
         margin-top: 15px;
     }
 
-    /* 通知・判定メッセージの背景を優しいグレーに固定（赤色を完全に上書き） */
+    /* 通知・判定メッセージの背景を優しいグレーに固定 */
     div[data-testid="stNotification"] {
         background-color: #f1f3f5 !important; 
         color: #495057 !important; 
         border: 1px solid #dee2e6 !important;
     }
-    div[data-testid="stNotification"] p {
-        color: #495057 !important;
-    }
-    div[data-testid="stNotification"] svg {
-        fill: #6c757d !important; 
-    }
     
-    /* 🔴 ボタンの赤み（Primary設定）を上書きして「深い緑」に変更 */
+    /* 🔴 問題の赤いボタン（type="primary"）を、目に優しいシックなグレーに上書き変更 */
     button[data-testid="baseButton-primary"] {
-        background-color: #2b8a3e !important;
-        color: white !important;
-        border: none !important;
+        background-color: #e9ecef !important;
+        color: #495057 !important;
+        border: 1px solid #ced4da !important;
     }
     button[data-testid="baseButton-primary"]:hover {
-        background-color: #237032 !important;
-        color: white !important;
+        background-color: #dee2e6 !important;
+        border: 1px solid #adb5bd !important;
+        color: #212529 !important;
+    }
+    
+    /* 通常ボタンのホバー時の色合いもマイルドに */
+    div.stButton > button:hover {
+        border-color: #2b8a3e !important;
+        color: #2b8a3e !important;
     }
     
     /* ボタンの共通丸み設定 */
@@ -225,7 +227,7 @@ elif step == 4:
             st.markdown("""
             * **仕様概要**: 注入口付アンカーピンニングエポキシ樹脂注入工法
             * **適合規格**: 国交省仕様適合工法
-            * **工法特徴**: 特殊アンカーピンと樹脂でタイル浮きを確実に防止。意意匠性を損ないません。
+            * **工法特徴**: 特殊アンカーピンと樹脂でタイル浮きを確実に防止。意匠性を損ないません。
             """)
         elif choices == ["塗装面", "面改修"]:
             st.metric(label="推奨工法", value="JKウォール工法")
@@ -325,7 +327,7 @@ if step > 1 or len(choices) == 5:
             st.rerun()
             
     with back_col2:
-        if st.button("🔄 最初からやり知す", use_container_width=True):
+        if st.button("🔄 最初からやり直す", use_container_width=True):
             st.session_state.step = 1
             st.session_state.choices = []
             st.rerun()
