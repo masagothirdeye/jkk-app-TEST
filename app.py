@@ -1,97 +1,231 @@
 import streamlit as st
 
-st.set_page_config(page_title="JKK関西 工法判定アシスタント", layout="centered")
+# ページの初期設定
+st.set_page_config(page_title="JKK外壁改修フロー判定", layout="centered")
 
-st.title("🏗️ JKK関西 外壁改修・最適工法判定アプリ")
-st.write("お客様からのヒアリング内容を選択すると、最適なJK工法を自動で判定します。")
+# タイトル表示
+st.title("🏗️ JKK関西 外壁改修・フローチャート判定アプリ")
+st.write("選択肢を順番に選ぶだけで、最適な工法を自動で判定します。")
+st.markdown("---")
 
-st.sidebar.header("📋 ヒアリング項目")
+# 画面状態（どのステップにいるか、これまでの選択肢）を記憶する仕組み
+if "step" not in st.session_state:
+    st.session_state.step = 1
+if "choices" not in st.session_state:
+    st.session_state.choices = []
 
-# 1. 目的・メインの要望
-purpose = st.sidebar.selectbox(
-    "1. 今回の主な工事目的は何ですか？",
-    ["選択してください", "外壁タイルの剥落・落下防止", "外壁の防水・風化防止（保護）", "外壁の見た目（意匠）をガラッと変えたい"]
-)
+# 現在のステップに応じた処理
+step = st.session_state.step
+choices = st.session_state.choices
 
-# 目的が選ばれたら詳細な質問を表示
-if purpose == "外壁タイルの剥落・落下防止":
-    condition = st.sidebar.radio(
-        "2. 現場の条件やお客様のこだわりはありますか？",
-        [
-            "特にない（標準的なタイル剥落防止）",
-            "マンション等で居住者がいるため、臭いや騒音（ドリル音）を抑えたい",
-            "UR都市機構などの厳しい品質基準をクリアしたい（高い伸張性・強度重視）",
-            "アンカーピンを打たずに（または併用して）繊維ネット層で補強したい"
-        ]
-    )
-elif purpose == "外壁の防水・風化防止（保護）":
-    condition = st.sidebar.radio(
-        "2. 防水工事における制約はありますか？",
-        [
-            "標準的な透明の防水・保護をしたい（コンクリ打ちっ放しやタイル面）",
-            "溶剤の臭いがNG、または防カビ・防藻性能を重視したい（完全水性）"
-        ]
-    )
-else:
-    condition = None
+# ---------------------------------------------------------
+# ステップ1：下地選択
+# ---------------------------------------------------------
+if step == 1:
+    st.subheader("【ステップ 1】下地を選んでください")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🧱 タイル面", use_container_width=True):
+            st.session_state.choices.append("タイル面")
+            st.session_state.step = 2
+            st.rerun()
+    with col2:
+        if st.button("🎨 塗装面", use_container_width=True):
+            st.session_state.choices.append("塗装面")
+            st.session_state.step = 2
+            st.rerun()
 
-st.subheader("🔍 判定結果")
+# ---------------------------------------------------------
+# ステップ2：改修範囲の選択
+# ---------------------------------------------------------
+elif step == 2:
+    st.subheader(f"現在：{ ' ＞ '.join(choices) }")
+    st.subheader("【ステップ 2】改修の範囲を選んでください")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🏢 面改修", use_container_width=True):
+            st.session_state.choices.append("面改修")
+            # 塗装面・面改修の場合は、次は工法確定（ステップ4相当）へジャンプ
+            if choices[0] == "塗装面":
+                st.session_state.step = 4
+            else:
+                st.session_state.step = 3
+            st.rerun()
+    with col2:
+        if st.button("🛠️ 部分改修", use_container_width=True):
+            st.session_state.choices.append("部分改修")
+            st.session_state.step = 4  # タイル面・塗装面ともに部分改修は次のステップで確定
+            st.rerun()
 
-# 判定ロジック
-if purpose == "選択してください":
-    st.info("左側のサイドバーからお客様のお問い合わせ内容を入力してください。")
+# ---------------------------------------------------------
+# ステップ3：工法目的の選択（タイル面・面改修のみ）
+# ---------------------------------------------------------
+elif step == 3:
+    st.subheader(f"現在：{ ' ＞ '.join(choices) }")
+    st.subheader("【ステップ 3】改修の目的を選んでください")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🛡️ 剥落防止工法", use_container_width=True):
+            st.session_state.choices.append("剥落防止工法")
+            st.session_state.step = 4
+            st.rerun()
+    with col2:
+        if st.button("💧 防水・保護工法", use_container_width=True):
+            st.session_state.choices.append("防水・保護工法")
+            st.session_state.step = 4
+            st.rerun()
 
-elif purpose == "外壁タイルの剥落・落下防止":
-    if "特にない" in condition:
-        st.success("推奨工法：【JKセライダー工法】")
-        st.markdown("""
-        **【工法概要】** 透明樹脂タイルピン固定剥落防止工法
-        - 特殊アクリル樹脂と特殊アンカーピンでタイル外壁を面で補強。
-        - 仕上げは無色透明で、タイルの風合いをそのまま維持。最長10年の共同保証。
-        """)
-    elif "臭いや騒音" in condition:
-        st.success("推奨工法：【水性JKセライダー工法】")
-        st.markdown("""
-        **【工法概要】** 環境配慮型タイル剥落防止工法
-        - オール水性材料で構成され、VOCや臭気を大幅カット。
-        - 無振動ドリルを使用するため騒音が少なく、「居ながらの工事」に最適。
-        """)
-    elif "UR都市機構" in condition:
-        st.success("推奨工法：【JKセライダーU工法】")
-        st.markdown("""
-        **【工法概要】** 特殊ウレタン樹脂系剥落防止工法
-        - UR都市機構の品質基準をすべてクリアした、高伸張・高引裂強度のウレタン樹脂を使用。
-        - 長期にわたり高い剥落防止性能を発揮。
-        """)
-    elif "アンカーピンを打たずに" in condition:
-        st.success("推奨工法：【JKテラピン工法】または【JKクリアファイバーW工法】")
-        st.markdown("""
-        **【工法概要】** 繊維ネット・特殊樹脂併用工法
-        - 建物の構造上、ピンが打てない場合や、メッシュ（ネット）での全面補強を望まれる場合に選定します。
-        """)
+# ---------------------------------------------------------
+# ステップ4：系統の選択、または最終結果の表示
+# ---------------------------------------------------------
+elif step == 4:
+    st.subheader(f"現在：{ ' ＞ '.join(choices) }")
+    
+    # ルート分岐のロジック
+    # ① タイル面 ＞ 面改修 ＞ 剥落防止工法 の場合（溶剤か水性か選ぶ）
+    if choices == ["タイル面", "面改修", "剥落防止工法"]:
+        st.subheader("【ステップ 4】塗料の系統を選んでください")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🧪 溶剤系", use_container_width=True):
+                st.session_state.choices.append("溶剤系")
+                st.session_state.step = 5 # 溶剤系はさらに選択肢あり
+                st.rerun()
+        with col2:
+            if st.button("🚰 水性系", use_container_width=True):
+                st.session_state.choices.append("水性系")
+                st.session_state.step = 5 # 水性系もさらに選択肢あり
+                st.rerun()
+                
+    # ② タイル面 ＞ 面改修 ＞ 防水・保護工法 の場合（溶剤か水性か選ぶ）
+    elif choices == ["タイル面", "面改修", "防水・保護工法"]:
+        st.subheader("【ステップ 4】塗料の系統を選んでください")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🧪 溶剤系", use_container_width=True):
+                st.session_state.choices.append("溶剤系")
+                st.session_state.step = 5
+                st.rerun()
+        with col2:
+            if st.button("🚰 水性系", use_container_width=True):
+                st.session_state.choices.append("水性系")
+                st.session_state.step = 5
+                st.rerun()
 
-elif purpose == "外壁の防水・風化防止（保護）":
-    if "標準的な透明" in condition:
-        st.success("推奨工法：【JKコート工法】")
-        st.markdown("""
-        **【工法概要】** 特殊アクリル樹脂系塗膜防水・保護工法
-        - 耐久性に優れた特殊アクリル樹脂の「透明塗膜」で外壁を保護。
-        - 高い防水性で雨水や中性化を防ぎ、コンクリート打ちっ放し面にも最適。
-        """)
-    elif "溶剤の臭いがNG" in condition:
-        st.success("推奨工法：【JKクリアコートW工法】")
-        st.markdown("""
-        **【工法概要】** 完全水性高性能特殊ウレタン樹脂下塗・中塗工法
-        - 1液型水性材料のため溶剤臭が一切ありません。
-        - 防カビ・防藻性能があり、寒冷地（マイナス気温）でも高い弾性を維持します。
-        """)
+    # 以下はステップ4の時点で最終工法が1つに確定するルート
+    else:
+        st.success("🎉 最適な工法が決定しました！")
+        
+        # タイル面 ＞ 部分改修
+        if choices == ["タイル面", "部分改修"]:
+            st.metric(label="推奨工法", value="JKテラピン工法")
+            st.caption("（注入口付アンカーピンニングエポキシ樹脂注入工法 / 国交省仕様適合工法）")
+            
+        # 塗装面 ＞ 面改修
+        elif choices == ["塗装面", "面改修"]:
+            st.write("**外壁塗膜防水工法（水性系）**")
+            st.metric(label="推奨工法", value="JKウォール工法")
+            st.caption("アクリルゴム系 / JIS A 6021")
+            
+        # 塗装面 ＞ 部分改修
+        elif choices == ["塗装面", "部分改修"]:
+            st.write("**ノンカットひび割れ補修工法 / アスベスト対策工法（水性系）**")
+            st.metric(label="推奨工法", value="JKラビング工法")
 
-elif purpose == "外壁の見た目（意匠）をガラッと変えたい":
-    st.success("推奨工法：【JKストーン工法】")
-    st.markdown("""
-    **【工法概要】** 高級石材調外壁改修材料（鎧張り工法）
-    - 既存の磁器タイルの上からそのまま施工でき、高級感のある石材調の意匠へグレードアップ。
-    - 建設廃材を大幅に削減でき、押し抜き強度1.5kNをクリアした高い安全性。
-    """)
+# ---------------------------------------------------------
+# ステップ5：最終確定（タイル面・面改修の溶剤／水性ルートの分岐）
+# ---------------------------------------------------------
+elif step == 5:
+    st.subheader(f"現在：{ ' ＞ '.join(choices) }")
+    
+    # 剥落防止工法 ＞ 溶剤系 の選択
+    if choices == ["タイル面", "面改修", "剥落防止工法", "溶剤系"]:
+        st.subheader("【ステップ 5】仕様を選んでください")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("アクリル樹脂（標準仕様）", use_container_width=True):
+                st.session_state.choices.append("アクリル樹脂（標準仕様）")
+                st.rerun()
+        with col2:
+            if st.button("アクリル樹脂（防水仕様）", use_container_width=True):
+                st.session_state.choices.append("アクリル樹脂（防水仕様）")
+                st.rerun()
+        # 下段に3つ目のボタン
+        if st.button("ウレタン樹脂（標準仕様）", use_container_width=True):
+            st.session_state.choices.append("ウレタン樹脂（標準仕様）")
+            st.rerun()
 
-st.warning("⚠️ 注意：上記は一次判定です。最終的な決定には、現場の劣化状況（浮きシロ、ひび割れ幅、下地コンクリートの状態）の調査・診断が必要です。")
+    # 剥落防止工法 ＞ 水性系 の選択
+    elif choices == ["タイル面", "面改修", "剥落防止工法", "水性系"]:
+        st.subheader("【ステップ 5】樹脂の種類を選んでください")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("アクリル樹脂", use_container_width=True):
+                st.session_state.choices.append("アクリル樹脂")
+                st.rerun()
+        with col2:
+            if st.button("ウレタン樹脂", use_container_width=True):
+                st.session_state.choices.append("ウレタン樹脂")
+                st.rerun()
+
+    # ここからは結果表示
+    else:
+        st.success("🎉 最適な工法が決定しました！")
+        
+        # 剥落防止 ＞ 溶剤の結果分岐
+        if "アクリル樹脂（標準仕様）" in choices:
+            st.metric(label="推奨工法", value="JKセライダー工法（標準仕様）")
+            st.caption("アクリル樹脂 / UR都市機構 品質基準適合工法")
+        elif "アクリル樹脂（防水仕様）" in choices:
+            st.metric(label="推奨工法", value="JKセライダー工法（防水仕様）")
+            st.caption("アクリル樹脂 / UR都市機構 品質基準適合工法")
+        elif "ウレタン樹脂（標準仕様）" in choices:
+            st.metric(label="推奨工法", value="JKセライダーU工法（標準仕様）")
+            st.caption("ウレタン樹脂")
+            
+        # 剥落防止 ＞ 水性の結果分岐
+        elif "アクリル樹脂" in choices and "剥落防止工法" in choices:
+            st.metric(label="推奨工法", value="水性JKセライダー工法")
+            st.caption("アクリル樹脂 / UR都市機構 品質基準適合工法")
+        elif "ウレタン樹脂" in choices and "剥落防止工法" in choices:
+            st.metric(label="推奨工法", value="JKクリアファイバーW工法")
+            st.caption("ウレタン樹脂 / UR都市機構 品質基準適合工法")
+            
+        # 防水・保護 ＞ 溶剤の結果
+        elif "溶剤系" in choices and "防水・保護工法" in choices:
+            st.metric(label="推奨工法", value="JKコート工法")
+            st.caption("アクリル樹脂")
+            
+        # 防水・保護 ＞ 水性の結果
+        elif "水性系" in choices and "防水・保護工法" in choices:
+            st.metric(label="推奨工法", value="JKクリアコートW工法")
+            st.caption("ウレタン樹脂")
+
+
+# ---------------------------------------------------------
+# 🔙 戻るボタンエリア（ステップ1以外で常に画面下部に表示）
+# ---------------------------------------------------------
+if step > 1:
+    st.markdown("---")
+    back_col1, back_col2 = st.columns(2)
+    
+    with back_col1:
+        if st.button("◀ 1つ前に戻る", use_container_width=True):
+            # 1つ前の状態に戻す処理
+            st.session_state.choices.pop()
+            # 塗装面・面改修から戻る時はステップ2へ、それ以外は1つ減らす
+            if choices == ["塗装面", "面改修"]:
+                st.session_state.step = 2
+            elif step == 5 and ("防水・保護工法" in st.session_state.choices or "部分改修" in st.session_state.choices):
+                st.session_state.step = 4
+            else:
+                st.session_state.step = max(1, step - 1)
+            st.rerun()
+            
+    with back_col2:
+        if st.button("🔄 最初からやり直す", use_container_width=True):
+            st.session_state.step = 1
+            st.session_state.choices = []
+            st.rerun()
