@@ -1,29 +1,29 @@
 import streamlit as st
 
-# ページの初期設定（ホームページのカラーに合わせた設定）
+# ページの初期設定
 st.set_page_config(
     page_title="JKK関西 外壁改修フロー判定", 
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# 🌐 JKK関西風のカスタムデザイン（CSS）を注入
+# 🎨 カスタムデザイン（CSS）の注入：トップを緑に、警告・結果の赤色をグレーに変更
 st.markdown("""
     <style>
     /* 全体の背景とフォント設定 */
     .stApp {
-        background-color: #f8fafd;
+        background-color: #f5f7f8;
     }
     
-    /* タイル・ヘッダー部分のデザイン */
+    /* タイル・ヘッダー部分のデザイン（鮮やかな緑色） */
     .jkk-header {
-        background-color: #0b3167; /* JKKネイビー */
+        background-color: #2b8a3e; /* 信頼感のあるグリーン */
         padding: 25px;
         border-radius: 8px;
         color: white;
         text-align: center;
         margin-bottom: 25px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
     .jkk-header h1 {
         color: white !important;
@@ -32,54 +32,60 @@ st.markdown("""
         margin-bottom: 5px !important;
     }
     .jkk-header p {
-        color: #d1dfef !important;
+        color: #d3f9d8 !important;
         font-size: 14px !important;
         margin: 0 !important;
     }
     
     /* サブ見出し（ステップ表示）のデザイン */
     .stSubheader {
-        color: #0b3167 !important;
+        color: #2b8a3e !important;
         font-weight: 600 !important;
-        border-left: 5px solid #0b3167;
+        border-left: 5px solid #2b8a3e;
         padding-left: 10px;
         margin-top: 20px;
         margin-bottom: 20px;
     }
     
-    /* 現在の選択ルート表示 */
+    /* 現在の選択ルート表示（落ち着いたグレー系） */
     .route-info {
-        background-color: #e6eef7;
+        background-color: #e9ecef;
         padding: 10px 15px;
         border-radius: 5px;
-        color: #0b3167;
+        color: #495057;
         font-size: 14px;
         font-weight: bold;
         margin-bottom: 20px;
-        border: 1px solid #bdcddf;
+        border: 1px solid #ced4da;
     }
     
-    /* 結果表示ボックスのカスタマイズ */
+    /* 結果表示ボックスのカスタマイズ（赤を排除し、上部をシックなグレーに） */
     .result-box {
         background-color: #ffffff;
-        border-top: 4px solid #0b3167;
+        border-top: 4px solid #495057; /* 濃いグレー */
         padding: 20px;
         border-radius: 0 0 8px 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 12 rgba(0,0,0,0.05);
         margin-top: 15px;
     }
+
+    /* Streamlit標準の成功メッセージ（緑/赤）を無機質なグレー風に上書き */
+    div[data-testid="stNotification"] {
+        background-color: #e9ecef !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
+    }
     
-    /* ボタンの共通設定（ホバー効果など） */
+    /* ボタンの丸み設定 */
     div.stButton > button {
         border-radius: 4px !important;
         font-weight: 600 !important;
-        transition: all 0.3s ease !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# ヘッダーエリア（ホームページ風）
+# ヘッダーエリア（トップ緑仕様）
 # ---------------------------------------------------------
 st.markdown("""
     <div class="jkk-header">
@@ -194,7 +200,7 @@ elif step == 4:
     # 最終確定ルート（ステップ4）
     else:
         st.markdown(f'<div class="route-info">📂 判定ルート：{ " ＞ ".join(choices) }</div>', unsafe_allow_html=True)
-        st.success("🎉 最適な工法が決定しました！")
+        st.info("📋 推奨工法が判定されました")
         
         st.markdown('<div class="result-box">', unsafe_allow_html=True)
         if choices == ["タイル面", "部分改修"]:
@@ -256,7 +262,7 @@ elif step == 5:
     else:
         # 結果表示
         st.markdown(f'<div class="route-info">📂 判定ルート：{ " ＞ ".join(choices[:4]) } ＞ {choices[4]}</div>', unsafe_allow_html=True)
-        st.success("🎉 最適な工法が決定しました！")
+        st.info("📋 推奨工法が判定されました")
         
         st.markdown('<div class="result-box">', unsafe_allow_html=True)
         if "アクリル樹脂（標準仕様）" in choices:
